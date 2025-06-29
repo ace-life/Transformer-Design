@@ -1,0 +1,93 @@
+For AC transformer consodering sinusoidal following is the matlab code:
+
+clc; clear all; close all;
+% AYUSHYA MAURYA
+
+% Step 1: Input basic transformer parameters
+Vrms_out = input('Enter secondary RMS voltage (Vrms): ');
+Iout = input('Enter secondary current (A): ');
+Vin = input('Enter primary voltage Vin (V): ');
+
+% Step 2: Efficiency and Power Calculation
+efficiency_percent = input('Enter efficiency in percent (e.g. 80): ');
+efficiency = efficiency_percent / 100;
+
+Vout_peak = Vrms_out * sqrt(2);
+Pout = Vrms_out * Iout;
+Pmax = Pout * (1 + 1 / efficiency);
+
+% Step 3: Voltage per turn
+Bm = input('Enter maximum flux density Bm (Tesla): ');
+An_cm2 = input('Enter core cross-sectional area An (cm^2): ');
+freq = input('Enter frequency (Hz): ');
+
+V_per_turn = (Bm * An_cm2 * freq) / (22.51 * 100); % V/turn
+
+% Step 4: Number of turns
+Np = ceil(Vin / V_per_turn);
+Ns = ceil(Vout_peak / V_per_turn);
+
+% Step 5: Wire cross-section (user input)
+A_p_mm2 = input('Enter primary wire cross-section area (mm^2): ');
+A_s_mm2 = input('Enter secondary wire cross-section area (mm^2): ');
+
+A_p = A_p_mm2 * 1e-6; % m²
+A_s = A_s_mm2 * 1e-6; % m²
+
+d_p = sqrt((4 * A_p) / pi); % in meters
+d_s = sqrt((4 * A_s) / pi); % in meters
+
+% Step 6: Inductance
+Al_nH = input('Enter Al value (nH/turn^2): ');
+Lp = Al_nH * 1e-9 * Np^2; % Henries
+Ls = Al_nH * 1e-9 * Ns^2;
+
+% Step 7: Window area check
+window_area_cm2 = input('Enter winding window area (cm^2): ');
+total_conductor_area_cm2 = (A_p_mm2 * Np + A_s_mm2 * Ns) * 0.01;
+fits = total_conductor_area_cm2 <= window_area_cm2;
+
+% Step 8: Resistance calculation
+rho = 1.68e-8; % Copper resistivity
+avg_turn_length = input('Enter average turn length (m): ');
+len_p = avg_turn_length * Np;
+len_s = avg_turn_length * Ns;
+
+Rp = rho * len_p / A_p;
+Rs = rho * len_s / A_s;
+
+% Step 9: Reactance
+Xp = 2 * pi * freq * Lp;
+Xs = 2 * pi * freq * Ls;
+
+% Step 10: Leakage reactance assumed 0
+
+% Step 11: Core loss and Rc
+core_loss = input('Enter core loss from datasheet (W): ');
+Rc = Vout_peak^2 / core_loss;
+
+% Step 12: Referred values
+a = Np / Ns;
+Rp_ref = Rp / (a^2);
+Xp_ref = Xp / (a^2);
+
+% Step 13: Total equivalent impedance on secondary
+Rload = 102000; % given
+Req = Rs + Rp_ref + Rload;
+Xeq = Xs + Xp_ref;
+
+% ----- Output Summary -----
+fprintf('\n----- SINGLE PHASE TRANSFORMER DESIGN -----\n');
+fprintf('1. Output Power             = %.4f W\n', Pout);
+fprintf('2. Max Power Designed for          = %.4f W\n', Pmax);
+fprintf('3. Voltage per Turn         = %.4f V/turn\n', V_per_turn);
+fprintf('4. Turns: Np = %.2f, Ns = %.2f\n', Np, Ns);
+fprintf('5. Wire Diameter: dp = %.3f mm, ds = %.3f mm\n', d_p * 1000, d_s * 1000);
+fprintf('6. Inductances: Lp = %.3f mH, Ls = %.3f mH\n', Lp * 1e3, Ls * 1e3);
+fprintf('7. Winding Window Fit       = %s\n', string(fits));
+fprintf('8. Resistances: Rp = %.4f Ohm, Rs = %.4f Ohm\n', Rp, Rs);
+fprintf('9. Reactances: Xp = %.4f Ohm, Xs = %.4f Ohm\n', Xp, Xs);
+fprintf('10. Core Loss Resistance Rc = %.2f Ohm\n', Rc);
+fprintf('11. Referred Rp'' = %.4f Ohm, Xp'' = %.4f Ohm\n', Rp_ref, Xp_ref);
+fprintf('12. Total Req on Secondary  = %.2f Ohm\n', Req);
+fprintf('13. Total Xeq on Secondary  = %.2f Ohm\n', Xeq);
