@@ -1,0 +1,114 @@
+# 📘 Induced EMF per Turn — Square Waveform Derivation
+
+This document gives a full derivation of the **induced EMF per turn** in a transformer or inductor core when the applied voltage is a **square waveform**, using first principles.
+
+---
+
+## ⚙️ 1. Starting Principle — Faraday's Law
+
+The fundamental equation governing electromagnetic induction is:
+
+e(t) = -N dϕ(t)/dt
+
+Where:
+- `e(t)` is the instantaneous induced EMF  
+- `N` is the number of turns  
+- `ϕ(t)` is the magnetic flux through the core  
+
+For EMF per turn, we set `N = 1`:
+
+e(t) = -dϕ(t)/dt
+
+## 📐 2. Applied Voltage: Square Waveform
+
+Let the applied voltage be a **symmetrical square wave** of:
+- Peak voltage: `V_m`
+- Frequency: `f` (Hz)
+- Time period: `T = 1/f`
+
+v(t) =
++V_m for 0 ≤ t < T/2
+-V_m for T/2 ≤ t < T
+
+Since:
+
+v(t) = dϕ(t)/dt
+vbnet
+Copy
+Edit
+
+We integrate to get flux:
+
+ϕ(t) = ∫v(t) dt
+
+
+## 📈 3. Flux Waveform: Triangular
+
+**First Half (0 to T/2):**
+
+ϕ(t) = V_m · t
+
+
+**Second Half (T/2 to T):**
+
+ϕ(t) = V_m · (T/2) - V_m · (t - T/2)
+
+
+**Peak flux:**
+
+ϕ_m = V_m · T/2 = V_m / (2f)
+
+
+## ⚡ 4. Induced EMF: Differentiate Flux
+
+From Faraday's Law:
+
+e(t) = -dϕ(t)/dt
+
+Since ϕ(t) is linear in each half cycle:
+
+|dϕ/dt| = 2·ϕ_m / T = 2f·ϕ_m
+
+So:
+
+E_peak_per_turn = 2f · B_m · A_n
+
+Where:
+- `B_m` is the peak flux density (T)
+- `A_n` is the net core area (m²)
+
+---
+
+## 📊 5. RMS Value of Square Wave
+
+Since the waveform is square:
+
+E_rms = E_peak = 2 f B_m A_n
+
+
+
+---
+
+## ✅ Final Formula
+
+**Per Turn:**
+
+E = 2 f B_m A_n
+
+
+
+**For N turns:**
+
+E = 2 f N B_m A_n
+
+
+
+---
+
+## 🔁 Comparison with Other Waveforms
+
+| Waveform   | EMF per turn     | Constant |
+| ---------- | ---------------- | -------- |
+| Sinusoidal | 4.44 f B_m A_n   | 4.44     |
+| Square     | 2.00 f B_m A_n   | 2.00     |
+| Triangular | 1.11 f B_m A_n   | 1.11     |
